@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00 merged by you; T01 implemented and awaiting staged review.**
+Status: **T00 and T01 merged by you; T02 staged review approved for publication, live SEC checks pending identity approval.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -21,9 +21,10 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
 - Implementation follows **red → green → refactor**: write a meaningful failing behavior test, confirm the intended
   failure, implement the minimum, then refactor with tests green. Record the failing and passing commands/results in the
   handoff. Add regression tests for discovered defects.
-- Use unit tests for pure behavior and integration tests for boundaries. Backend integration tests exercise real Express
-  requests with only SEC traffic stubbed; UI integration tests exercise user interactions with controlled API responses.
-  Automated tests must not depend on live SEC data.
+- Focus tests on business behavior, not setup/configuration. Use unit tests for pure filing logic and integration tests
+  for the SEC adapter and API boundaries, stubbing only SEC traffic. Once endpoints exist, exercise real Express
+  requests; UI tests exercise user interactions with controlled API responses. Avoid redundant checks and keep automated
+  tests independent of live SEC data. Verify build/start through acceptance rather than extra setup test suites.
 - Every implementation PR covers its documented edge cases. Each applicable NOTES.md entry links to the actual test once
   written; uncovered cases remain explicitly open. Do not mark work complete with silently deferred edge coverage.
 - Before every non-documentation handoff: run type checking, Biome, knip, unit/integration tests, a production build,
@@ -33,11 +34,14 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
 - Before every handoff, perform an **adversarial review of the actual diff**: challenge requirement coverage, failure
   paths, test blind spots, unnecessary complexity, and misleading documentation. Fix findings and rerun affected checks;
   report unresolved concerns.
+- Code structure is a review priority: use named operations and clear domain boundaries. Collocate `schemas/`, `errors/`,
+  and `types/` within their owning domain; put fixtures in tests. Derive external-data types from schemas, avoid casts,
+  and extract complex expressions for readability. Keep HTTP/cache concerns independent of company and filing rules.
 - Keep PROMPTS.md current with user prompts and follow-up answers. Maintain edge cases and reasoning through N01
   throughout implementation.
 
 Task-tracker checkboxes mean acceptance criteria and required checks are satisfied and you have accepted the PR. They do
-not authorize merging. T01 remains open until its PR is reviewed.
+not authorize merging. T02 remains open until its PR is reviewed.
 
 ## Scope decisions
 
@@ -74,17 +78,21 @@ See [NOTES.md](NOTES.md) for evidence, edge cases, and known constraints.
 
 ## Task tracker
 
-Follow T00–T06 in order. Replace each PR placeholder with its link when created.
+Follow T00–T07 in order; finish N01's final notes before T07's cross-document review. Replace each PR placeholder with
+its link when created.
 
 - [x] **T00 — Roadmap and assignment logs.** Reviewed and merged by
   you. [PR #1](https://github.com/elkhan/quatr-elkhan/pull/1).
-- [ ] **T01 — Project setup and runnable skeleton.** Implemented with CI; current 9 tests, quality checks, build/start,
-  and acceptance passed. Configuration/startup test removals await clarification. Awaiting staged review. PR: pending.
-- [ ] **T02 — SEC lookup and complete normalized history.** Not started. PR: pending.
+- [x] **T01 — Project setup and runnable skeleton.** Reviewed and merged by you.
+  [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2). CI passed on merged `main`; redundant configuration/startup
+  tests remain removed in line with your testing guidance.
+- [ ] **T02 — SEC lookup and complete normalized history.** 24 business tests and local quality/build/start/acceptance
+  checks pass. Staged review approved; commit/push/PR authorized. Live SEC identity approval pending. PR: pending.
 - [ ] **T03 — Paginated, filterable filings endpoint.** Not started. PR: pending.
 - [ ] **T04 — Multi-company summary endpoint.** Not started. PR: pending.
 - [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.
 - [ ] **T06 — End-to-end acceptance and run instructions.** Not started. PR: pending.
+- [ ] **T07 — Final documentation alignment.** After T06 and N01, or at the time-budget stop. PR: pending.
 - [ ] **N01 — Ongoing edge-case reasoning and final notes.** Starts now; closes after T06 or the time-budget stop. Final
   documentation PR: pending.
 
@@ -108,8 +116,8 @@ apply to this documentation-only task.
 **Acceptance criteria:**
 
 - [x] Add GitHub CI for PRs and pushes to `main`, using the project's runtime versions, frozen lockfile, quality checks,
-  unit/React tests, HTTP integration tests, and production build. Workflow syntax is validated locally; the first
-  GitHub-hosted run follows publication.
+  unit/React tests, HTTP integration tests, and production build. Workflow syntax is validated locally;
+  [CI passed on merged main](https://github.com/elkhan/quatr-elkhan/actions/runs/34370626478).
 
 - [x] TypeScript is strict; React, Express, Zod, and Vitest are wired up with Bun, Biome, and knip. Include the
   dependency lockfile in staged changes; avoid unused scaffolding and blanket lint/type suppressions.
@@ -122,9 +130,9 @@ apply to this documentation-only task.
   environment, run development, run checks, then build/start. State whether Node is also needed by the chosen toolchain,
   with a tested version if so.
 
-**Red/green tests and edge cases:** Start with failing configuration unit tests, an initial React render test, and
-Express health integration tests. Cover valid/default configuration, malformed/out-of-range ports, missing/blank
-required configuration, unknown API routes returning JSON 404, and application imports not binding a listening port.
+**Validation:** Setup was verified through tests and runtime acceptance. You subsequently removed the redundant
+configuration/startup tests and clarified that new automated tests must focus on business behavior. Build/start
+acceptance remains required; the historical checks are recorded in NOTES.md.
 
 **Acceptance:** Follow README.md from a clean dependency install; verify all scripts, successful build, and built-app
 start. Open the page and call the health endpoint. Check missing configuration and a port conflict fail clearly. Record
@@ -137,18 +145,18 @@ produce filing objects with original SEC document links.
 
 **Acceptance criteria:**
 
-- [ ] Normalize ticker whitespace/case while preserving meaningful punctuation. Resolve CIK through SEC's directory and
+- [x] Normalize ticker whitespace/case while preserving meaningful punctuation. Resolve CIK through SEC's directory and
   zero-pad submissions CIKs to 10 digits. Do not hardcode the assignment's example companies.
-- [ ] Parse the required external fields with Zod, tolerate unrelated extra fields, and align columnar rows correctly.
+- [x] Parse the required external fields with Zod, tolerate unrelated extra fields, and align columnar rows correctly.
   Load every referenced historical file, deduplicate by accession number, and handle the historical payload's shape
   separately from the main response.
-- [ ] Each filing has accession number, form, filing date, and an original-document URL. A missing/blank
+- [x] Each filing has accession number, form, filing date, and an original-document URL. A missing/blank
   primary-document filename or absent optional document column links to the original complete submission text; a present
   but misaligned column is invalid. Document this fallback.
-- [ ] Supply the configured User-Agent, a finite timeout, and shared request pacing below SEC's published limit. Use
+- [x] Supply the configured User-Agent, a finite timeout, and shared request pacing below SEC's published limit. Use
   small in-memory reuse for repeated ticker/company reads with an explicit expiry; do not cache failures or add
   persistent storage. Concurrent callers share identical in-flight fetches.
-- [ ] Unknown tickers, malformed data, SEC rejection/rate limiting, timeouts, and failed archive reads are
+- [x] Unknown tickers, malformed data, SEC rejection/rate limiting, timeouts, and failed archive reads are
   distinguishable errors. Do not silently truncate history or automatically retry without bounds.
 
 **Red/green tests and edge cases:** Unit-test ticker/CIK conversion, row normalization, URL generation, and
@@ -160,6 +168,9 @@ concurrent requests. See E01–E05 and E11 in NOTES.md.
 **Acceptance:** Run the fixture-backed client against a company whose relevant filing exists only in an archive, and
 verify no rows are lost or duplicated. Make a limited live lookup/history check for Apple, Spotify, and JPMorgan Chase
 using your configured SEC identity; record access failures honestly.
+
+**Current evidence:** Unit/integration tests, local HTTP fixture acceptance, and build/start pass. Live checks and link
+verification are pending approval to transmit the configured SEC identity; see NOTES.md.
 
 ### T03 — Paginated, filterable filings endpoint
 
@@ -256,6 +267,28 @@ testing in every earlier implementation PR.
 not return HTML. Exercise a mapped ticker beyond the shortcuts with a fixture, a foreign annual form, historical data,
 failure recovery, and the unsupported-ticker message. Live SEC unavailability must be reported as a blocked live check,
 not disguised with fixture results.
+
+### T07 — Final documentation alignment
+
+**Description:** Reconcile README.md, ROADMAP.md, NOTES.md, and PROMPTS.md with the delivered code, accepted decisions,
+and actual validation evidence. This final documentation PR follows T06 acceptance and N01's completed edge-case notes,
+or documents the partial delivery if the assignment's time limit is reached.
+
+**Acceptance criteria:**
+
+- [ ] README.md matches the shipped install/run/check/build/start commands, runtime versions, configuration, implemented
+  endpoints/query defaults, and available UI flows. Use T06's validation evidence; verify any changed command example.
+- [ ] NOTES.md records the current accepted tradeoffs, cache/scaling limitations, remaining work, and blocked checks.
+  Distinguish implemented behavior, approved future behavior, and future design options.
+- [ ] ROADMAP.md task states and PR links match delivery; PROMPTS.md includes all user prompts and decisions through
+  handoff. Preserve clearly labeled historical evidence while removing stale current-status claims.
+- [ ] Local links, test references, example requests, and terminology agree across all four documents. No unimplemented
+  endpoint, unrun live check, or multi-instance capability is presented as delivered or verified.
+
+**Validation / edge cases:** Review docs against the final diff and acceptance log. Look for renamed/moved tests, changed
+defaults, obsolete installation commands, superseded decisions, stale test counts, and partial delivery at the time stop.
+Run an adversarial documentation review. Do not add setup/configuration tests for this task; any discovered code defect
+gets its own implementation task with business tests and acceptance. This task produces its own ready-for-review PR.
 
 ### N01 — Ongoing edge cases, reasoning, and final notes
 
