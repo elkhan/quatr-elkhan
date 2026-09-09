@@ -1,0 +1,8 @@
+export type SecErrorCode =
+  | "INVALID_TICKER"
+  | "TICKER_NOT_FOUND"
+  | "INVALID_SEC_DATA"
+  | "SEC_FORBIDDEN"
+  | "SEC_RATE_LIMITED"
+  | "SEC_UNAVAILABLE"
+  | "SEC_TIMEOUT";

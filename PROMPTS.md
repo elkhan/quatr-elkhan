@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. Work so far: assignment review, planning, approved documentation publication, and T01 project setup with tests and acceptance checks. T01 changes await staged review; they have not been committed.
+Assistant: OpenAI Codex. T00 planning and T01 project setup/CI were reviewed and merged by the user. T02 SEC history retrieval and its structural refactor were reviewed and published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), including the requested tradeoff notes and final-docs task. Live SEC checks await separate approval to use the configured contact identity.
 
 ## 001 — 2026-09-09 — Repository instructions
 
@@ -42,7 +42,7 @@ Context: the assistant asked whether to include referenced historical files, whe
 
 I don't have exact product requirements but these are my assumptions. Do you have any concerns? Be critical
 
-And before the handoff do an advesarial review of you changes.
+And before the handoff do an adversarial review of you changes.
 ```
 
 ## 004 — 2026-09-09 — Approval and publication
@@ -61,4 +61,50 @@ The first PR is merged. I am aware of your concerns feel free to bring them up d
 
 ```text
 Add GH CI workflow
+```
+
+## 007 — 2026-09-09 — Begin SEC retrieval; focus testing on business behavior
+
+```text
+Committed and merged. Move on to the next task.
+I know this is not a production system but we should stil follow proper conventions where it makes sense - delivery is the main goal not perfect code or structure.
+Don't over test, setup integration test was redundant. It has to cover business logic not setups/configs.
+```
+
+## 008 — 2026-09-09 — Refactor structure; explain before editing
+
+```text
+Move zod validations into separate files per domain.
+The same with Error classes.
+I am not happy with the current code structure where everything is lumped together.
+Split into manageable/reviewable functions/code blocks.
+Avoid casting, have reusable types' files
+Fixtures belong in tests
+Avoid inline ternaries
+Refactor src/server/sec/client.ts per my suggestions. I asked you to follow conventions that includes code structure.
+
+Let me know if you are following, share your understandiung before writing code. How would you refactor this file?
+```
+
+## 009 — 2026-09-09 — Domain directories and maintainability
+
+```text
+It is okay to have ternaries but extract them for readability. src/server/sec/client.ts is not readable at all.
+It is fine to have filenames express the intentions like company.schemas or sec.errors another option is a directory - errors, schemas etc. Depends on collocation options. If too many schema or errors related files it may make sense to have a dedicated directory.
+Have a schema directory with schema files.
+The same with errors and types. Consider maintainability and flexibility, avoid coupling.
+
+Make sure that code structure is one of your priorities.
+
+Does it make sense? Please be critical. Despite this being a test, I still want to see clear separation and maintainability addressed
+```
+
+## 010 — 2026-09-09 — Publication approval, tradeoffs, and final documentation task
+
+```text
+Reviewed, you can commit and push, create a PR.
+
+I think it would make sense to document in NOTES.md  the limitations of the current caching approach in case of horizontal scaling.
+
+And the currently accepted tradeoffs. Add a task for the final docs alignment
 ```

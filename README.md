@@ -1,7 +1,7 @@
 # SEC filings
 
-TypeScript, React, Express, Zod, and Vitest. Project setup is implemented; SEC lookup, filing endpoints, and the
-interactive UI are tracked in [ROADMAP.md](ROADMAP.md).
+TypeScript, React, Express, Zod, and Vitest. Project setup and the SEC history adapter are implemented. Filing endpoints
+and the interactive UI are next; see [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
@@ -28,7 +28,7 @@ cp .env.example .env
 
 Edit `.env`: replace `SEC_USER_AGENT` with your name and contact email (for example, `Jane Doe jane@example.com`).
 `PORT` defaults to `3000` and must be an integer from 1 to 65535. Bun loads `.env` automatically; it is ignored by Git.
-No SEC API key is needed. This setup does not yet make SEC requests.
+No SEC API key is needed. The adapter uses this identity for SEC requests; the current placeholder UI does not fetch data.
 
 ## Run
 
@@ -60,8 +60,9 @@ bun run check:unused
 bun run test
 ```
 
-`bun run test:unit` runs server unit tests and React rendering tests; `bun run test:integration` exercises real HTTP
-requests. Tests use Vitest, require permission to open local ports, and make no SEC requests. Use
+`bun run test:unit` runs filing normalization and existing skeleton unit/React tests. `bun run test:integration` exercises
+the SEC adapter with synthetic SEC responses and existing local HTTP checks. Tests use Vitest, require permission to open
+local ports, and make no live SEC requests. Use
 `bun run test`, since `bun test` invokes Bun's different test runner. `bun run format` applies Biome's safe
 formatting/import fixes.
 
@@ -71,3 +72,23 @@ Validation evidence and edge cases are in [NOTES.md](NOTES.md); AI prompts are i
 [GitHub CI](.github/workflows/ci.yml) runs type, formatting/lint, unused-code, unit/React, integration, and production-build
 checks on every PR and push to `main`. It uses the versions in `.nvmrc` and `package.json`, a frozen lockfile, and no
 project secrets or live SEC data. New commits cancel older runs for the same PR or branch.
+
+## SEC history adapter
+
+`createSecClient({ userAgent })` in `src/server/sec/client.ts` exposes `getCompanyHistory(ticker)`. It returns company
+identity and filings from the recent response plus every referenced archive, deduplicated by accession number. Recent
+records win overlaps. A missing primary-document filename links to the original complete submission `.txt` file.
+
+Ticker input is trimmed and uppercased, preserving punctuation (for example, `BRK-B`). Lookup uses SEC's ticker directory,
+whose coverage is incomplete; an unmapped ticker does not mean the company does not exist. CIK input is outside scope.
+
+Reuse one client per server: requests are serialized at least 200 ms apart, with a 10-second timeout per request and no
+automatic retries. Successful directory/history reads expire after five minutes; at most 20 completed company histories
+are retained. Concurrent requests share work, including ticker aliases for the same CIK. A failed archive fails the entire
+company read; failures are not cached. The pacing/cache are local to that client, so multiple server processes would need
+coordination. Fetching complete history can make the first lookup slower.
+
+Code is collocated under `src/server/sec/`: `client.ts` coordinates lookup/history, `http.ts` owns requests and pacing,
+`cache.ts` owns reuse, and `normalize.ts` maps validated rows to filings. Domain validation, errors, and shared contracts
+live in `schemas/`, `errors/`, and `types/`. `tests/` contains the business tests and fixtures. Transport/cache modules
+do not depend on company or filing schemas; normalization receives typed rows and has no runtime dependency on Zod.
