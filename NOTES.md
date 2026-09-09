@@ -2,7 +2,7 @@
 
 ## Current status and scope
 
-T00–T02 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2), [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3)). T03 adds the paginated, filterable filings endpoint and HTTP security controls, awaiting staged review without a commit. All 75 current tests, quality checks, build/start, and local HTTP/browser acceptance pass. Manual live checks for all three example companies and source-document retrieval pass using the explicitly authorized dummy SEC identity. T04–T07 remain outstanding.
+T00–T02 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2), [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3)). T03 adds the paginated, filterable filings endpoint and HTTP security controls; you approved the changes, now published as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4). All 75 current tests, quality checks, build/start, and local HTTP/browser acceptance pass. Manual live checks for all three example companies and source-document retrieval pass using the explicitly authorized dummy SEC identity. T04–T07 remain outstanding.
 
 Your testing guidance resolves the earlier configuration/startup coverage question: those redundant tests remain removed. T03 replaces the eight remaining server setup assertions with filings HTTP behavior tests. Startup and static assets are checked through acceptance; no additional setup/configuration test suite is planned.
 
@@ -316,10 +316,17 @@ these checks without transmitting the real contact identity.
 - **Handoff:** Frozen-lockfile installation and documentation-link checks pass. All temporary application/fixture servers
   and the browser acceptance tab were closed. Changes remain staged without a commit.
 
+### 2026-09-09 — T03 publication
+
+- You approved the staged changes and requested publication. Committed the implementation as `a02ceba`, pushed
+  `feat/filings-endpoint`, and opened [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) ready for review.
+- The new wording includes “merge,” while the earlier workflow reserved merges for you. A clarification is pending;
+  the PR remains open. No additional implementation change was made during publication. Existing local validation
+  remains applicable; GitHub CI runs against the published branch.
+
 ## Remaining work and completion notes
 
-- T00–T02 are merged. T03 implementation, deterministic tests, quality checks, and local acceptance pass; its changes await
-  staged review and separate commit/PR authorization. Manual live SEC acceptance now passes; automated tests remain fixture-only.
+- T00–T02 are merged. T03 is approved and published as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4). Its merge instruction is being clarified against the earlier no-merge rule. Manual live SEC acceptance passes; automated tests remain fixture-only.
 - The earlier automatic approval block concerned the real contact identity in `.env`. You subsequently authorized a dummy identity. Manual live checks used a temporary SEC_USER_AGENT override with an example.com email; the real value was neither changed nor sent. No live check was added to tests or CI.
 - Next after T03 review: T04 summary, T05 UI, T06 final acceptance, N01 final edge-case notes, and T07 final documentation
   alignment. Discuss Docker and nock before deciding whether either warrants a later task.

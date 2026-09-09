@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00–T02 were reviewed and merged by the user, including [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3) for SEC history retrieval. T03 implements the filings endpoint with business tests and local acceptance; changes await staged review without a commit. Docker/nock remain a later discussion. Manual live SEC checks now pass using the explicitly authorized dummy identity; automated tests and CI use fixtures only.
+Assistant: OpenAI Codex. T00–T02 were reviewed and merged by the user, including [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3) for SEC history retrieval. T03 implements the filings endpoint with business tests and local acceptance; the user approved publication and [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) is open. Docker/nock remain a later discussion. Manual live SEC checks now pass using the explicitly authorized dummy identity; automated tests and CI use fixtures only.
 
 ## 001 — 2026-09-09 — Repository instructions
 
