@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00 and T01 merged by you; T02 staged review approved for publication, live SEC checks pending identity approval.**
+Status: **T00 and T01 merged by you; T02 published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), live SEC checks pending identity approval.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -87,7 +87,8 @@ its link when created.
   [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2). CI passed on merged `main`; redundant configuration/startup
   tests remain removed in line with your testing guidance.
 - [ ] **T02 — SEC lookup and complete normalized history.** 24 business tests and local quality/build/start/acceptance
-  checks pass. Staged review approved; commit/push/PR authorized. Live SEC identity approval pending. PR: pending.
+  checks pass. Staged changes reviewed and published; PR review and live SEC identity approval pending.
+  [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3).
 - [ ] **T03 — Paginated, filterable filings endpoint.** Not started. PR: pending.
 - [ ] **T04 — Multi-company summary endpoint.** Not started. PR: pending.
 - [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.

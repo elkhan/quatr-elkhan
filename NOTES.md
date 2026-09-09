@@ -2,7 +2,7 @@
 
 ## Current status and scope
 
-T00 and T01 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2)). T02 implements ticker lookup and complete normalized SEC history, with 24 new business tests; all 33 current tests and local quality/build/start/acceptance checks pass. You reviewed the staged changes and authorized the T02 commit, push, and PR. Live SEC acceptance remains pending approval to send the configured contact identity. T03–T07 remain outstanding.
+T00 and T01 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2)). T02 implements ticker lookup and complete normalized SEC history, with 24 new business tests; all 33 current tests and local quality/build/start/acceptance checks pass. You reviewed the staged changes and authorized publication in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), which is open for review. Live SEC acceptance remains pending approval to send the configured contact identity. T03–T07 remain outstanding.
 
 Your latest testing guidance resolves the earlier configuration/startup coverage question: those redundant tests remain removed. New tests cover filing behavior and SEC failures, not setup/configuration; build/start are still checked at handoff.
 
@@ -187,12 +187,13 @@ remain T03. No dependencies, setup tests, or configuration options were added.
   independent freshness, insertion-order eviction, the completed-entry limit, unbounded in-flight/queued work, and
   request-level rather than whole-lookup timeouts. Future distributed coordination is explicitly outside current scope.
 - These follow-up edits are documentation-only. The reviewed source is unchanged from the passing 33-test suite,
-  quality/build/start checks, and local HTTP acceptance recorded above; GitHub CI will validate the published branch.
+  quality/build/start checks, and local HTTP acceptance recorded above. Committed and pushed T02, and opened normal
+  [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3); GitHub CI results are attached to the PR. No merge was performed.
 
 ## Remaining work and completion notes
 
-- T00/T01 are merged. T02 staged review is complete and publication is authorized; implementation, deterministic tests,
-  quality checks, and local acceptance pass. PR review and live SEC acceptance remain pending.
+- T00/T01 are merged. T02 is published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3); implementation,
+  deterministic tests, quality checks, and local acceptance pass. PR review and live SEC acceptance remain pending.
 - Live checks for Apple, Spotify, JPMorgan Chase and representative document links await approval to send `SEC_USER_AGENT` from `.env` to SEC. Automatic approval review rejected that request because the value may contain private name/contact data. No workaround or external identity transmission was attempted. This is a blocked check, not a pass.
 - Next after T02 PR review: T03 exposes the adapter through the paginated/filterable filings endpoint and creates one
   shared SEC client for the server. T04 summary, T05 UI, T06 final acceptance, N01 final edge-case notes, and T07 final

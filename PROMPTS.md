@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00 planning and T01 project setup/CI were reviewed and merged by the user. T02 SEC history retrieval and its structural refactor were reviewed; the user authorized committing, pushing, and opening a PR, including the requested tradeoff notes and final-docs task. Live SEC checks await separate approval to use the configured contact identity.
+Assistant: OpenAI Codex. T00 planning and T01 project setup/CI were reviewed and merged by the user. T02 SEC history retrieval and its structural refactor were reviewed and published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), including the requested tradeoff notes and final-docs task. Live SEC checks await separate approval to use the configured contact identity.
 
 ## 001 — 2026-09-09 — Repository instructions
 
