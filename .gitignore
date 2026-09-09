@@ -1,2 +1,9 @@
-idea
+.idea/
+.DS_Store
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
 /Data Tooling - Coding Assignment.pdf

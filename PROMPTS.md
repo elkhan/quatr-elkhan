@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. Work so far: read the local assignment and its linked SEC documentation, clarify scope, and prepare planning documents. No application implementation has started.
+Assistant: OpenAI Codex. Work so far: assignment review, planning, approved documentation publication, and T01 project setup with tests and acceptance checks. T01 changes await staged review; they have not been committed.
 
 ## 001 — 2026-09-09 — Repository instructions
 
@@ -49,4 +49,16 @@ And before the handoff do an advesarial review of you changes.
 
 ```text
 I approve. Commit, push and open a PR - https://github.com/elkhan/quatr-elkhan
+```
+
+## 005 — 2026-09-09 — Begin project setup
+
+```text
+The first PR is merged. I am aware of your concerns feel free to bring them up during implementation if necessary. Continue asking when in doubt. Move on now
+```
+
+## 006 — 2026-09-09 — GitHub CI
+
+```text
+Add GH CI workflow
 ```
