@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00–T04 were reviewed and merged by the user, including [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5) for summaries and explicit controllers. T05 adds the filing browser and summary UI; it passed the user’s review and is marked complete, with commit/push authorization. The assistant never merges. Automated tests/fixture acceptance use controlled data only; manual live SEC checks use the separately authorized dummy identity.
+Assistant: OpenAI Codex. T00–T04 were reviewed and merged by the user, including [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5) for summaries and explicit controllers. T05 adds the filing browser and summary UI; it passed the user’s review, is marked complete, and is published in [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6). The assistant never merges. Automated tests/fixture acceptance use controlled data only; manual live SEC checks use the separately authorized dummy identity.
 
 ## 001 — 2026-09-09 — Repository instructions
 

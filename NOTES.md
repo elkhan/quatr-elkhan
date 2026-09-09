@@ -2,7 +2,7 @@
 
 ## Current status and scope
 
-T00–T04 were reviewed and merged by you, most recently [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). T05 implements the filing browser and summary UI on `feat/filing-browser`; it passed your review and is marked complete, with publication authorized. All 131 tests, quality checks, build/start, fixture browser acceptance, and separate manual live UI checks pass. Automated tests remain isolated from live APIs. T06 end-to-end automation and T07 documentation alignment remain outstanding.
+T00–T04 were reviewed and merged by you, most recently [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). T05 implements the filing browser and summary UI on `feat/filing-browser`; it passed your review, is marked complete, and is published in [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6). All 131 tests, quality checks, build/start, fixture browser acceptance, and separate manual live UI checks pass. Automated tests remain isolated from live APIs. T06 end-to-end automation and T07 documentation alignment remain outstanding.
 
 Your testing guidance resolves the earlier configuration/startup coverage question: those redundant tests remain removed. T03 replaces the eight remaining server setup assertions with filings HTTP behavior tests. Startup and static assets are checked through acceptance; no additional setup/configuration test suite is planned.
 
@@ -501,10 +501,20 @@ pass checks. About 30 minutes went into T05 implementation, review, and verifica
   Final review checked numeric inference, semantic status behavior, readonly props, event types, and documentation;
   no new defect was found. Temporary servers/tabs were closed and viewport settings reset.
 
+### 2026-09-09 — T05 completion and publication
+
+- You accepted T05 and explicitly requested marking it complete, committing, and pushing. The tracker therefore marks
+  T05 done without implying that its PR has merged. Committed the reviewed UI as `c40e154`, pushed `feat/filing-browser`,
+  and opened normal ready-for-review [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6) under the standing task workflow. The assistant did not merge.
+- Publication only adds the prompt/completion record and PR links to the reviewed source. The passing 131-test suite,
+  quality/build/start checks, browser acceptance, and deep review above still apply; no implementation was changed.
+  Documentation review checked task completion versus merge status, links, test totals, and current versus historical
+  statements. GitHub CI runs against the final published commit; its result is attached to the PR.
+
 ## Remaining work and completion notes
 
-- T00–T04 are merged by you. T05 passed your review and is marked complete as requested; committing and pushing are
-  authorized. PR publication follows the standing task workflow; no merge is authorized.
+- T00–T04 are merged by you. T05 passed your review, is marked complete as requested, and is published in
+  [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6). No merge was performed or authorized.
 - Automated tests and fixture acceptance never call live APIs. Separate manual SEC checks use the authorized dummy
   identity; the real `.env` contact remains unchanged and undisclosed.
 - Next: T06 automated end-to-end acceptance, N01 final edge-case notes, and T07 final documentation
