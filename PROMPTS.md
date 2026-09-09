@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00 planning and T01 project setup/CI were reviewed and merged by the user. T02 SEC history retrieval and its structural refactor were reviewed and published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), including the requested tradeoff notes and final-docs task. Live SEC checks await separate approval to use the configured contact identity.
+Assistant: OpenAI Codex. T00–T02 were reviewed and merged by the user, including [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3) for SEC history retrieval. T03 implements the filings endpoint with business tests and local acceptance; the user approved publication and [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) is open. Docker/nock remain a later discussion. Manual live SEC checks now pass using the explicitly authorized dummy identity; automated tests and CI use fixtures only.
 
 ## 001 — 2026-09-09 — Repository instructions
 
@@ -107,4 +107,40 @@ Reviewed, you can commit and push, create a PR.
 I think it would make sense to document in NOTES.md  the limitations of the current caching approach in case of horizontal scaling.
 
 And the currently accepted tradeoffs. Add a task for the final docs alignment
+```
+
+## 011 — 2026-09-09 — T02 merged; request the next implementation plan
+
+```text
+Merged. What is the next task and how do you plan to tackle it?
+```
+
+## 012 — 2026-09-09 — Begin the filings endpoint
+
+```text
+Do it. We can discuss dockerizing this and using nock later when we have routes.
+```
+
+## 013 — 2026-09-09 — Security practices and live-check blocker
+
+```text
+I see that helmet is missing. Let's introduce some security best practises. Or at least document in NOTES.md our understanding of best practises including logging of sensitive data, request size, security headers, http param pollution, csrf, rate limiting etc
+
+Meanwhile, what's blocking you from live checks?
+```
+
+## 014 — 2026-09-09 — Dummy identity authorization, test isolation, and CORS
+
+```text
+Yes, I authorize live SEC checks using dummy email in SEC_USER_AGENT.
+
+You probably know but worth reminding that we should never call a live API in tests
+
+Did we defer cors as well? We shouldn't it is a low hanging fruit
+```
+
+## 015 — 2026-09-09 — Approve publication
+
+```text
+I approve the changes, commit, merge and create a PR
 ```

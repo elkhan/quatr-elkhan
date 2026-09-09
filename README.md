@@ -1,7 +1,7 @@
 # SEC filings
 
-TypeScript, React, Express, Zod, and Vitest. Project setup and the SEC history adapter are implemented. Filing endpoints
-and the interactive UI are next; see [ROADMAP.md](ROADMAP.md).
+TypeScript, React, Express, Zod, and Vitest. SEC history retrieval and the paginated filings endpoint are implemented.
+The summary endpoint and interactive UI are next; see [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
@@ -51,6 +51,10 @@ Open http://127.0.0.1:3000 (or your configured port). Express serves the built R
 local machine. `GET /health` returns `{"status":"ok"}`; unknown routes return a JSON 404. Missing/invalid configuration
 and occupied ports stop startup with an error.
 
+CORS allows `http://127.0.0.1:<PORT>` and, in development, `http://127.0.0.1:<CLIENT_PORT>` (defaults 3000/5173).
+It permits GET/HEAD and Accept, without credentials. Other origins return 403; requests without Origin remain supported.
+Use the documented `127.0.0.1` URLs; `localhost` is a different origin. Production does not allow the development origin.
+
 ## Check
 
 ```sh
@@ -60,9 +64,9 @@ bun run check:unused
 bun run test
 ```
 
-`bun run test:unit` runs filing normalization and existing skeleton unit/React tests. `bun run test:integration` exercises
-the SEC adapter with synthetic SEC responses and existing local HTTP checks. Tests use Vitest, require permission to open
-local ports, and make no live SEC requests. Use
+`bun run test:unit` runs filing normalization, filtering/pagination, and React tests. `bun run test:integration` exercises
+the SEC adapter and real Express requests with only SEC traffic stubbed. Tests use Vitest, require permission to open
+local ports, and never call live APIs. Manual live acceptance is separate from automated tests and CI. Use
 `bun run test`, since `bun test` invokes Bun's different test runner. `bun run format` applies Biome's safe
 formatting/import fixes.
 
@@ -72,6 +76,39 @@ Validation evidence and edge cases are in [NOTES.md](NOTES.md); AI prompts are i
 [GitHub CI](.github/workflows/ci.yml) runs type, formatting/lint, unused-code, unit/React, integration, and production-build
 checks on every PR and push to `main`. It uses the versions in `.nvmrc` and `package.json`, a frozen lockfile, and no
 project secrets or live SEC data. New commits cancel older runs for the same PR or branch.
+
+## Filings API
+
+After starting the server, these requests use your configured SEC identity (adjust the port if needed):
+
+```sh
+curl -fsS 'http://127.0.0.1:3000/companies/AAPL/filings'
+curl -fsS 'http://127.0.0.1:3000/companies/AAPL/filings?form=10-K&page=1&pageSize=25&sort=asc'
+```
+
+`GET /companies/:ticker/filings` returns `{ company, filings, page, pageSize, total }`. Company fields are `ticker`, `cik`,
+and `name`; each filing contains `accessionNumber`, `form`, `filingDate`, and `documentUrl`. `total` counts all matches
+before pagination. No matches or a page beyond the end returns an empty `filings` array.
+
+| Query | Default / behavior |
+| --- | --- |
+| `page` | `1`; positive safe integer written with decimal digits. |
+| `pageSize` | `25`; positive integer, maximum `100`. |
+| `form` | Optional exact, case-sensitive match after trimming. `10-K/A` and `20-F` remain distinct from `10-K`. |
+| `sort` | `desc` (newest first), or `asc`. Filing date and then accession number use that direction. |
+
+Filtering and sorting apply to complete history before pagination. Unknown, nested, repeated, empty, or invalid query
+parameters return 400. Errors use `{ "error": { "code": "…", "message": "…" } }`: 400 for invalid input, 404 for an unmapped
+ticker, 502 for SEC rejection/data failures, and 504 for SEC timeouts. Unexpected internal failures return a generic 500.
+Pagination limits the response size; a cold lookup still fetches every required archive.
+
+Requests are body-free: a positive Content-Length or any Transfer-Encoding returns 413. Encoded URL paths/queries over
+4096 bytes return 414. Helmet protects Express responses, including the built page. Local HTTP does not enable HSTS or
+automatic HTTPS upgrading. Inbound rate limiting and request logging are not implemented; see
+[security practices and remaining gaps](NOTES.md#security-practices-and-remaining-gaps) before considering public hosting.
+
+`src/server/filings/` contains the route, pure listing logic, query schemas, response types, and business tests.
+`src/server/errors/` translates API errors; startup creates one shared SEC client and injects it into the application.
 
 ## SEC history adapter
 

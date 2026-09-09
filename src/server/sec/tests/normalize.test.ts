@@ -44,10 +44,10 @@ describe("SEC filing normalization", () => {
 
   it("preserves document subdirectories and encodes reserved filename characters", () => {
     const filings = normalizePayloads("0000320193", [
-      { ...oldestArchive, primaryDocument: ["xslF345/report #1?.xml"] },
+      { ...oldestArchive, primaryDocument: ["xslF345/report #1?😀.xml"] },
     ]);
     expect(filings[0]?.documentUrl).toBe(
-      "https://www.sec.gov/Archives/edgar/data/320193/000032019300000004/xslF345/report%20%231%3F.xml",
+      "https://www.sec.gov/Archives/edgar/data/320193/000032019300000004/xslF345/report%20%231%3F%F0%9F%98%80.xml",
     );
   });
 
@@ -69,6 +69,7 @@ describe("SEC filing normalization", () => {
     ["empty required value", { ...oldestArchive, form: [" "] }],
     ["malformed accession", { ...oldestArchive, accessionNumber: ["../filing"] }],
     ["document traversal", { ...oldestArchive, primaryDocument: ["../other.htm"] }],
+    ["invalid document Unicode", { ...oldestArchive, primaryDocument: ["\ud800.htm"] }],
   ])("rejects %s instead of returning incomplete or misleading filings", (_label, payload) => {
     expect(() => normalizePayloads("0000320193", [payload])).toThrow(ZodError);
   });
