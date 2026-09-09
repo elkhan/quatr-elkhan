@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00–T02 merged by you; T03 approved and published as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); merge decision pending. Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
+Status: **T00–T03 reviewed and merged by you; T04 is published for review in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -22,7 +22,8 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
   failure, implement the minimum, then refactor with tests green. Record the failing and passing commands/results in the
   handoff. Add regression tests for discovered defects.
 - Focus tests on business behavior, not setup/configuration. Use unit tests for pure filing logic and integration tests
-  for the SEC adapter and API boundaries, stubbing only SEC traffic. Once endpoints exist, exercise real Express
+  for the SEC adapter and API boundaries, stubbing SEC traffic. Inject unexpected client failures when checking the
+  HTTP error contract. Once endpoints exist, exercise real Express
   requests; UI tests exercise user interactions with controlled API responses. Avoid redundant checks and keep automated
   tests and CI isolated from every live API. Manual live acceptance is separate and never enters test scripts.
   Verify build/start through acceptance rather than extra setup test suites.
@@ -32,17 +33,19 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
   and the built application's start command. Perform feature acceptance testing against the running application. Browser
   changes require browser acceptance testing. Record results and disclose any blocked checks; a blocked check is not a
   pass.
-- Before every handoff, perform an **adversarial review of the actual diff**: challenge requirement coverage, failure
+- Before every handoff, perform a **deep adversarial review of the actual diff**: challenge requirement coverage, failure
   paths, test blind spots, unnecessary complexity, and misleading documentation. Fix findings and rerun affected checks;
   report unresolved concerns.
 - Code structure is a review priority: use named operations and clear domain boundaries. Collocate `schemas/`, `errors/`,
   and `types/` within their owning domain; put fixtures in tests. Derive external-data types from schemas, avoid casts,
   and extract complex expressions for readability. Keep HTTP/cache concerns independent of company and filing rules.
+  Routers register handlers; domain controllers coordinate validated input, services, and HTTP responses. Keep services
+  independent of Express and test observable behavior at the HTTP boundary.
 - Keep PROMPTS.md current with user prompts and follow-up answers. Maintain edge cases and reasoning through N01
   throughout implementation.
 
 Task-tracker checkboxes record PRs accepted by you. Outstanding validation limitations remain explicitly documented;
-they do not become passes when a PR is merged. T03 remains open until its PR is reviewed. No checkbox authorizes merging.
+they do not become passes when a PR is merged. T03 is complete through [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); T04 remains open until its PR is reviewed. No checkbox authorizes merging.
 
 ## Scope decisions
 
@@ -90,9 +93,9 @@ its link when created.
 - [x] **T02 — SEC lookup and complete normalized history.** Reviewed and merged by you. Deterministic checks passed;
   manual live SEC history/document checks subsequently passed with the authorized dummy identity; T06 will repeat final feature acceptance.
   [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3).
-- [ ] **T03 — Paginated, filterable filings endpoint.** Implemented with HTTP security controls; 75 total tests, quality checks, build/start, and
-  compiled-app local HTTP acceptance pass. Approved and published as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); currently open.
-- [ ] **T04 — Multi-company summary endpoint.** Not started. PR: pending.
+- [x] **T03 — Paginated, filterable filings endpoint.** Implemented with HTTP security controls; 75 total tests, quality checks, build/start, and
+  compiled-app local HTTP acceptance pass. Reviewed and merged by you as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); GitHub CI passed.
+- [ ] **T04 — Multi-company summary endpoint.** Implemented with explicit controllers for both APIs; 104 tests and required checks pass. Staged changes approved and published for PR review. [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5).
 - [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.
 - [ ] **T06 — End-to-end acceptance and run instructions.** Not started. PR: pending.
 - [ ] **T07 — Final documentation alignment.** After T06 and N01, or at the time-budget stop. PR: pending.
@@ -200,7 +203,7 @@ Ensure an archived filing appears on the correct page. See E06–E07 and E11.
 failure over HTTP. Confirm a returned original-document link opens on sec.gov.
 
 **Current evidence:** Six listing unit tests and 43 real-HTTP route cases pass; a reproduced malformed-Unicode filename
-defect also has a SEC schema regression test. All 75 tests and required local checks pass. Compiled-app acceptance covered
+defect also has a SEC schema regression test. All 75 tests and required local checks passed at T03 completion. Compiled-app acceptance covered
 filtering, ordering, paging, invalid input, unknown ticker, archive failure/recovery, and a real request timeout. Live SEC
 history checks and source-document HTTP retrieval now pass with the authorized dummy identity; interactive UI navigation
 remains T05/T06. Unknown query parameters currently return
@@ -217,12 +220,14 @@ T03, and no implementation task or dependency is added until that discussion.
 
 **Acceptance criteria:**
 
-- [ ] Implement the proposed summary query, date-window rules, deduplication, and per-company result/error contract.
+- [x] Implement the proposed summary query, date-window rules, deduplication, and per-company result/error contract.
   Reuse T02 rather than fetching through the paginated endpoint.
-- [ ] Counts include all exact form types found in the window. No recent filings yields empty counts; no historical
+- [x] Counts include all exact form types found in the window. No recent filings yields empty counts; no historical
   exact 10-K yields `null`. An older 10-K remains eligible for `latest10KDate`.
-- [ ] Mixed success/failure is visible for each requested ticker; all-company failure also remains explicit. Respect the
+- [x] Mixed success/failure is visible for each requested ticker; all-company failure also remains explicit. Respect the
   shared SEC request pacing across concurrent API requests.
+- [x] Extract controllers for both endpoints; keep routers limited to registration and verify unexpected failures at
+  the HTTP boundary without exposing internal diagnostics.
 
 **Red/green tests and edge cases:** Unit-test aggregation with a fixed clock: inclusive cutoff, today, one day outside
 either boundary, future dates, leap-day clamping, amendments, no filings, no 10-K, and a latest 10-K found only in an
@@ -233,6 +238,13 @@ E07–E09.
 **Acceptance:** Build/start and request the three example companies together. Check fixture-backed counts and historical
 10-K dates exactly; verify unknown tickers do not hide successful companies. Live counts are not fixed test
 expectations.
+
+**Current evidence:** Eight summary unit cases, 19 summary HTTP cases, and two shared HTTP error cases pass (104 tests
+overall). The controller refactor preserves the existing 62 endpoint cases; unexpected-defect coverage now exercises
+both controllers through real HTTP instead of a redundant service-only assertion. Build/start and
+compiled-app acceptance cover exact fixture counts, archived annual dates, mixed/all failures, recovery, and cache
+sharing with listings. Manual live acceptance is separate from automated tests; results are recorded in NOTES.md.
+Future-dated 10-Ks remain ineligible under the implementation approved at staged review.
 
 ### T05 — Filing browser and summary UI
 

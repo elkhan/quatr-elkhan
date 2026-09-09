@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { SecError } from "../errors/sec";
 
-const tickerSchema = z.string().trim().min(1).toUpperCase();
+export const tickerSchema = z.string().trim().min(1).toUpperCase();
 
 export const cikSchema = z
   .union([z.number(), z.string().regex(/^\d{1,10}$/)])

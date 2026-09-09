@@ -6,6 +6,7 @@ import { createFilingsRouter } from "./filings/routes";
 import { createCorsPolicy } from "./security/cors";
 import { securityHeaders } from "./security/headers";
 import { requestLimits } from "./security/request-limits";
+import { createSummaryRouter } from "./summary/routes";
 import type { AppOptions } from "./types/app";
 
 export function createApp({ clientDirectory, secClient, allowedOrigins }: AppOptions) {
@@ -25,6 +26,7 @@ export function createApp({ clientDirectory, secClient, allowedOrigins }: AppOpt
   });
 
   app.use("/companies", createFilingsRouter(secClient));
+  app.use("/filings", createSummaryRouter(secClient));
 
   if (clientDirectory) {
     if (!existsSync(join(clientDirectory, "index.html"))) {
