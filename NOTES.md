@@ -2,7 +2,7 @@
 
 ## Current status and scope
 
-T00–T03 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2), [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4)). T04 implements the multi-company summary endpoint, with explicit controllers for both APIs; you approved the staged changes for publication. All 104 tests, quality checks, build/start, and local acceptance pass after the controller refactor. Separate manual live checks passed before extraction; no live API was called during this refactor's checks. T05–T07 remain outstanding.
+T00–T03 were reviewed and merged by you ([PR #1](https://github.com/elkhan/quatr-elkhan/pull/1), [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2), [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4)). T04 implements the multi-company summary endpoint, with explicit controllers for both APIs; the approved changes are published in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5) for review. All 104 tests, quality checks, build/start, and local acceptance pass after the controller refactor. Separate manual live checks passed before extraction; no live API was called during this refactor's checks. T05–T07 remain outstanding.
 
 Your testing guidance resolves the earlier configuration/startup coverage question: those redundant tests remain removed. T03 replaces the eight remaining server setup assertions with filings HTTP behavior tests. Startup and static assets are checked through acceptance; no additional setup/configuration test suite is planned.
 
@@ -409,9 +409,20 @@ limitations remain; no scope reduction or background fetch mechanism was introdu
   remain open. README, ROADMAP, and PROMPTS reflect the controller decision and latest instructions. All temporary
   servers were stopped; the task is staged for review without committing, pushing, or merging.
 
+### 2026-09-09 — T04 publication
+
+- You approved the staged changes and authorized committing, pushing, and creating a PR. Committed the implementation
+  as `0ea7563`, pushed `feat/filings-summary`, and opened normal ready-for-review
+  [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). No merge was performed.
+- Publication follow-up only updates the prompt log and task/status links. The reviewed source is unchanged from the
+  passing 104-test suite, quality/build/start checks, acceptance, and deep adversarial review recorded above.
+  Documentation review checked that T04 remains open pending PR review, historical evidence stays labeled, and no stale
+  current-status claim still requires staged approval. GitHub CI runs against the published branch; results are attached
+  to the PR rather than presumed successful here.
+
 ## Remaining work and completion notes
 
-- T00–T03 are merged by you. T04 implementation and checks are complete locally; you approved committing, pushing, and opening a ready-for-review PR. The assistant must never merge. Automated tests remain fixture-only.
+- T00–T03 are merged by you. T04 is committed and pushed in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5), awaiting PR review. The assistant must never merge. Automated tests remain fixture-only.
 - The earlier automatic approval block concerned the real contact identity in `.env`. You subsequently authorized a dummy identity. Manual live checks used a temporary SEC_USER_AGENT override with an example.com email; the real value was neither changed nor sent. No live check was added to tests or CI.
 - Next after T04 review: T05 UI, T06 final acceptance, N01 final edge-case notes, and T07 final documentation
   alignment. Discuss Docker and nock before deciding whether either warrants a later task.

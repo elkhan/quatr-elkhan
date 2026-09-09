@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00–T03 reviewed and merged by you; T04 staged changes are approved for publication on `feat/filings-summary`. Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
+Status: **T00–T03 reviewed and merged by you; T04 is published for review in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -95,7 +95,7 @@ its link when created.
   [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3).
 - [x] **T03 — Paginated, filterable filings endpoint.** Implemented with HTTP security controls; 75 total tests, quality checks, build/start, and
   compiled-app local HTTP acceptance pass. Reviewed and merged by you as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); GitHub CI passed.
-- [ ] **T04 — Multi-company summary endpoint.** Implemented with explicit controllers for both APIs; 104 tests and required checks pass. Staged changes approved for publication. PR: pending.
+- [ ] **T04 — Multi-company summary endpoint.** Implemented with explicit controllers for both APIs; 104 tests and required checks pass. Staged changes approved and published for PR review. [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5).
 - [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.
 - [ ] **T06 — End-to-end acceptance and run instructions.** Not started. PR: pending.
 - [ ] **T07 — Final documentation alignment.** After T06 and N01, or at the time-budget stop. PR: pending.
