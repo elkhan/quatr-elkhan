@@ -43,7 +43,7 @@ See [NOTES.md](NOTES.md) for evidence, edge cases, and known constraints.
 
 Follow T00–T06 in order. Replace each PR placeholder with its link when created.
 
-- [ ] **T00 — Roadmap and assignment logs.** Staged changes approved; PR review pending. PR: pending.
+- [ ] **T00 — Roadmap and assignment logs.** Staged changes approved; PR review pending. [PR #1](https://github.com/elkhan/quatr-elkhan/pull/1).
 - [ ] **T01 — Project setup and runnable skeleton.** Not started. PR: pending.
 - [ ] **T02 — SEC lookup and complete normalized history.** Not started. PR: pending.
 - [ ] **T03 — Paginated, filterable filings endpoint.** Not started. PR: pending.

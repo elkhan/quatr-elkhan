@@ -47,7 +47,7 @@ Update entries as evidence arrives. Add actual test file/test names when impleme
 - Review findings addressed: use actual Markdown task checkboxes; distinguish user-confirmed scope from proposed exact-form semantics; specify batch versus single-company error behavior; reconcile missing-document fallback with required-column validation; explicitly test the initial React render; remove ambiguous lockfile commit wording.
 - Checked against both assignment pages and all user instructions. All required features have an owning task; pending tests and runtime limitations are labeled. The remaining concerns are the time budget and the accepted ticker-directory coverage limit.
 - Runtime checks: not applicable; documentation only, with no application scaffold yet.
-- Publication review: confirmed the staged scope, checked document consistency and whitespace, and recorded approval. The empty GitHub repository needs an empty `main` commit so all task changes can be reviewed on a separate PR branch. No merge is authorized.
+- Publication review: confirmed the staged scope, checked document consistency and whitespace, and recorded approval. Initialized the empty GitHub repository with an empty `main` commit and opened [PR #1](https://github.com/elkhan/quatr-elkhan/pull/1) with all task changes on a separate branch. No merge is authorized.
 
 ## Remaining work and completion notes
 
