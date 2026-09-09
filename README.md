@@ -1,7 +1,8 @@
 # SEC filings
 
 TypeScript, React, Express, Zod, and Vitest. SEC history retrieval, paginated filings, and multi-company summaries are
-implemented. The interactive UI is next; see [ROADMAP.md](ROADMAP.md).
+implemented with an interactive filing browser and summary UI. Final end-to-end automation and documentation alignment
+remain in [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
@@ -28,7 +29,7 @@ cp .env.example .env
 
 Edit `.env`: replace `SEC_USER_AGENT` with your name and contact email (for example, `Jane Doe jane@example.com`).
 `PORT` defaults to `3000` and must be an integer from 1 to 65535. Bun loads `.env` automatically; it is ignored by Git.
-No SEC API key is needed. The adapter uses this identity for SEC requests; the current placeholder UI does not fetch data.
+No SEC API key is needed. The backend uses this identity for SEC requests when you submit a search or summary.
 
 ## Run
 
@@ -55,6 +56,19 @@ CORS allows `http://127.0.0.1:<PORT>` and, in development, `http://127.0.0.1:<CL
 It permits GET/HEAD and Accept, without credentials. Other origins return 403; requests without Origin remain supported.
 Use the documented `127.0.0.1` URLs; `localhost` is a different origin. Production does not allow the development origin.
 
+## Use the UI
+
+- Enter a ticker and click **Search filings**, or use AAPL/SPOT/JPM. Set an exact form (including `20-F` or `10-K/A`)
+  and date order, then submit to apply. A new search resets to page 1; company shortcuts preserve the form/order.
+- **Previous page / Next page** use the submitted criteria, even while you edit a new search. **Open filing** opens the
+  original SEC document in a new tab. Narrow tables scroll horizontally, including by keyboard.
+- Enter up to ten comma-separated tickers under **Company summaries** and click **Summarize**. Results show the UTC
+  counting window, exact form counts, latest exact 10-K, and individual company failures. “None found” means no eligible
+  exact 10-K; foreign annual reports remain separate forms.
+- Searches run only on submission. Loading/error/empty states are explicit; retry uses the failed request's criteria.
+  New requests cancel/ignore stale responses. Ticker-directory coverage is limited and cold complete-history reads can
+  take time. Browser cancellation does not cancel shared SEC work already running on the server.
+
 ## Check
 
 ```sh
@@ -64,7 +78,8 @@ bun run check:unused
 bun run test
 ```
 
-`bun run test:unit` runs filing normalization, filtering/pagination, summary aggregation, and React tests.
+`bun run test:unit` runs filing normalization, filtering/pagination, summary aggregation, client response validation,
+and React interaction tests.
 `bun run test:integration` exercises the SEC adapter and real Express requests with SEC traffic stubbed; injected client
 defects verify the generic HTTP error contract. Tests use Vitest, require permission to open local ports, and never call
 live APIs. Manual live acceptance is separate from automated tests and CI. Use
@@ -155,3 +170,7 @@ Code is collocated under `src/server/sec/`: `client.ts` coordinates lookup/histo
 `cache.ts` owns reuse, and `normalize.ts` maps validated rows to filings. Domain validation, errors, and shared contracts
 live in `schemas/`, `errors/`, and `types/`. `tests/` contains the business tests and fixtures. Transport/cache modules
 do not depend on company or filing schemas; normalization receives typed rows and has no runtime dependency on Zod.
+
+Client code is collocated under `src/client/filings/` and `src/client/summary/`: forms, request coordination, result views,
+schemas, and schema-derived types. `src/client/api/` handles JSON responses, API errors, and cancellation shared by both
+features. Client code has no runtime dependency on server modules. Fixtures stay in test directories.

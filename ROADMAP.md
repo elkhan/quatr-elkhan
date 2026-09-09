@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00–T03 reviewed and merged by you; T04 is published for review in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
+Status: **T00–T04 reviewed and merged by you; T05 passed your review and is complete, published in [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6). Automated tests remain isolated from live APIs.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -44,8 +44,8 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
 - Keep PROMPTS.md current with user prompts and follow-up answers. Maintain edge cases and reasoning through N01
   throughout implementation.
 
-Task-tracker checkboxes record PRs accepted by you. Outstanding validation limitations remain explicitly documented;
-they do not become passes when a PR is merged. T03 is complete through [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); T04 remains open until its PR is reviewed. No checkbox authorizes merging.
+Task-tracker checkboxes record work accepted by you. Outstanding validation limitations remain explicitly documented;
+they do not become passes when a PR is merged. T04 is merged through [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5); you explicitly marked T05 complete after staged review, ahead of its PR merge. No checkbox authorizes merging.
 
 ## Scope decisions
 
@@ -95,8 +95,8 @@ its link when created.
   [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3).
 - [x] **T03 — Paginated, filterable filings endpoint.** Implemented with HTTP security controls; 75 total tests, quality checks, build/start, and
   compiled-app local HTTP acceptance pass. Reviewed and merged by you as [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4); GitHub CI passed.
-- [ ] **T04 — Multi-company summary endpoint.** Implemented with explicit controllers for both APIs; 104 tests and required checks pass. Staged changes approved and published for PR review. [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5).
-- [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.
+- [x] **T04 — Multi-company summary endpoint.** Reviewed and merged by you in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5). All 104 tests and required checks passed; GitHub CI passed on the published commit.
+- [x] **T05 — Filing browser and summary UI.** Passed your review and marked complete at your request; 131 tests and required checks pass. Published and not merged. [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6).
 - [ ] **T06 — End-to-end acceptance and run instructions.** Not started. PR: pending.
 - [ ] **T07 — Final documentation alignment.** After T06 and N01, or at the time-budget stop. PR: pending.
 - [ ] **N01 — Ongoing edge-case reasoning and final notes.** Starts now; closes after T06 or the time-budget stop. Final
@@ -205,8 +205,8 @@ failure over HTTP. Confirm a returned original-document link opens on sec.gov.
 **Current evidence:** Six listing unit tests and 43 real-HTTP route cases pass; a reproduced malformed-Unicode filename
 defect also has a SEC schema regression test. All 75 tests and required local checks passed at T03 completion. Compiled-app acceptance covered
 filtering, ordering, paging, invalid input, unknown ticker, archive failure/recovery, and a real request timeout. Live SEC
-history checks and source-document HTTP retrieval now pass with the authorized dummy identity; interactive UI navigation
-remains T05/T06. Unknown query parameters currently return
+history checks and source-document HTTP retrieval passed with the authorized dummy identity; T05 also verified
+interactive original-document navigation. T06 owns the automated end-to-end coverage. Unknown query parameters currently return
 400, as proposed while awaiting your preference. The security follow-up additionally verified headers, URL/body rejection,
 query pollution, explicit CORS origins/preflights, and the built UI under CSP; security gaps and validation evidence are
 recorded in NOTES.md.
@@ -253,14 +253,14 @@ state library.
 
 **Acceptance criteria:**
 
-- [ ] Users can enter a ticker, switch companies, filter forms, change filing-date sort direction, page through results,
+- [x] Users can enter a ticker, switch companies, filter forms, change filing-date sort direction, page through results,
   and open original filings. The example companies can be shortcuts, but arbitrary mapped tickers work.
-- [ ] Form filtering supports foreign-company and amendment forms; it is not restricted to `10-K`, `10-Q`, and `8-K`.
-- [ ] A summary accepts several tickers and clearly displays counts by form, the date window, latest 10-K dates, and
+- [x] Form filtering supports foreign-company and amendment forms; it is not restricted to `10-K`, `10-Q`, and `8-K`.
+- [x] A summary accepts several tickers and clearly displays counts by form, the date window, latest 10-K dates, and
   per-company errors. Missing 10-Ks display “None found.”
-- [ ] Loading, empty, invalid-input, and error states are visible and allow recovery. Reset pagination when
+- [x] Loading, empty, invalid-input, and error states are visible and allow recovery. Reset pagination when
   ticker/filter/sort changes, and prevent stale responses from replacing newer selections.
-- [ ] Inputs have labels, controls work by keyboard, pagination boundaries are clear, and tables remain usable on a
+- [x] Inputs have labels, controls work by keyboard, pagination boundaries are clear, and tables remain usable on a
   narrow screen.
 
 **Red/green tests and edge cases:** Use Vitest and React Testing Library to test visible behavior. Cover search
@@ -271,6 +271,12 @@ transformations separately only where they contain meaningful logic. See E06–E
 **Acceptance:** Build/start and use the browser to complete filing and summary flows with fixtures, including a slow old
 response followed by a new selection and a failed request followed by recovery. Check keyboard operation and
 narrow-screen layout; repeat the main flow with live data where available.
+
+**Current evidence:** 18 React interaction cases and ten client response-validation cases pass; 131 tests overall.
+Initial UI cases failed before implementation; four adversarial regressions then failed before fixes. Browser acceptance
+covers final built assets, keyboard submission/paging/scrolling, a 390-pixel viewport, exact forms, empty/mixed results,
+error recovery, and stale requests. Separate manual live UI checks passed; console warnings/errors were inspected, but
+Chrome's Network panel was not. See NOTES.md for findings and limits. T06 owns the automated end-to-end suite.
 
 ### T06 — End-to-end acceptance and run instructions
 

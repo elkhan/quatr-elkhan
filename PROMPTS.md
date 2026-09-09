@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00–T03 were reviewed and merged by the user, including [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) for the filings endpoint and HTTP security. T04 adds multi-company summaries and explicit controllers; the user approved the staged changes, which are published in [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5) for review. The assistant never merges. Docker/nock remain a later discussion; automated tests and CI use fixtures only, and manual live checks use the separately authorized dummy identity.
+Assistant: OpenAI Codex. T00–T04 were reviewed and merged by the user, including [PR #5](https://github.com/elkhan/quatr-elkhan/pull/5) for summaries and explicit controllers. T05 adds the filing browser and summary UI; it passed the user’s review, is marked complete, and is published in [PR #6](https://github.com/elkhan/quatr-elkhan/pull/6). The assistant never merges. Automated tests/fixture acceptance use controlled data only; manual live SEC checks use the separately authorized dummy identity.
 
 ## 001 — 2026-09-09 — Repository instructions
 
@@ -177,4 +177,40 @@ Make sure to run deep adversarial review before handoff.
 
 ```text
 I approve the changes. Commit and push creating a PR
+```
+
+
+## 021 — 2026-09-09 — T04 merged; start T05
+
+```text
+Merged. Move on to the next task - T05
+```
+
+## 022 — 2026-09-09 — Developer tools during acceptance
+
+```text
+Did you inspect dev tools during acceptance testing?
+```
+
+
+## 023 — 2026-09-09 — Frontend review comments
+
+```text
+Some FE related comments:
+
+1. count.toLocaleString("en-US") will use object default stringification format
+2. <p className="loading" role="status"> prefer output for accessibility
+3. tabIndex={0} on this element?
+4. Make immutable props read-only
+5. 'FormEvent' is deprecated
+6. Let's document that the global strylesheet is an accepted tradeoff for this assignment.
+
+Let me know if you disagree
+```
+
+
+## 024 — 2026-09-09 — T05 accepted; mark complete and publish
+
+```text
+Passes my review. Mark T05 as done, commit and push
 ```
