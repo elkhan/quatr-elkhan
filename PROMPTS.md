@@ -2,7 +2,7 @@
 
 This log records user-authored project instructions, prompts, and clarifications for the assignment's AI-use disclosure. Entries preserve the original wording, including typos; incidental trailing whitespace is removed. Append subsequent prompts and answers in order before each handoff. Do not invent missing history; redact secrets explicitly if any appear in a future prompt.
 
-Assistant: OpenAI Codex. T00–T02 were reviewed and merged by the user, including [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3) for SEC history retrieval. T03 implements the filings endpoint with business tests and local acceptance; the user approved publication and [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) is open. Docker/nock remain a later discussion. Manual live SEC checks now pass using the explicitly authorized dummy identity; automated tests and CI use fixtures only.
+Assistant: OpenAI Codex. T00–T03 were reviewed and merged by the user, including [PR #4](https://github.com/elkhan/quatr-elkhan/pull/4) for the filings endpoint and HTTP security. T04 adds multi-company summaries and explicit controllers; the user approved the staged changes and authorized committing, pushing, and opening a PR. The assistant never merges. Docker/nock remain a later discussion; automated tests and CI use fixtures only, and manual live checks use the separately authorized dummy identity.
 
 ## 001 — 2026-09-09 — Repository instructions
 
@@ -143,4 +143,38 @@ Did we defer cors as well? We shouldn't it is a low hanging fruit
 
 ```text
 I approve the changes, commit, merge and create a PR
+```
+
+## 016 — 2026-09-09 — No assistant merges; start T04 and update the roadmap
+
+```text
+I misspoke, you don't merge.
+
+Move on to the next task. I believe it is T04?
+
+Make sure to reflect completed work in the ROADMAP.md
+```
+
+## 017 — 2026-09-09 — Controller structure question
+
+```text
+What made you avoid controllers?
+```
+
+## 018 — 2026-09-09 — Extract controllers and test at boundaries
+
+```text
+Refactor to add controllers. Let's keep code testable at the boundaries
+```
+
+## 019 — 2026-09-09 — Deep adversarial review
+
+```text
+Make sure to run deep adversarial review before handoff.
+```
+
+## 020 — 2026-09-09 — Approve T04 publication
+
+```text
+I approve the changes. Commit and push creating a PR
 ```

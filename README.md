@@ -1,7 +1,7 @@
 # SEC filings
 
-TypeScript, React, Express, Zod, and Vitest. SEC history retrieval and the paginated filings endpoint are implemented.
-The summary endpoint and interactive UI are next; see [ROADMAP.md](ROADMAP.md).
+TypeScript, React, Express, Zod, and Vitest. SEC history retrieval, paginated filings, and multi-company summaries are
+implemented. The interactive UI is next; see [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
@@ -64,9 +64,10 @@ bun run check:unused
 bun run test
 ```
 
-`bun run test:unit` runs filing normalization, filtering/pagination, and React tests. `bun run test:integration` exercises
-the SEC adapter and real Express requests with only SEC traffic stubbed. Tests use Vitest, require permission to open
-local ports, and never call live APIs. Manual live acceptance is separate from automated tests and CI. Use
+`bun run test:unit` runs filing normalization, filtering/pagination, summary aggregation, and React tests.
+`bun run test:integration` exercises the SEC adapter and real Express requests with SEC traffic stubbed; injected client
+defects verify the generic HTTP error contract. Tests use Vitest, require permission to open local ports, and never call
+live APIs. Manual live acceptance is separate from automated tests and CI. Use
 `bun run test`, since `bun test` invokes Bun's different test runner. `bun run format` applies Biome's safe
 formatting/import fixes.
 
@@ -107,8 +108,33 @@ Requests are body-free: a positive Content-Length or any Transfer-Encoding retur
 automatic HTTPS upgrading. Inbound rate limiting and request logging are not implemented; see
 [security practices and remaining gaps](NOTES.md#security-practices-and-remaining-gaps) before considering public hosting.
 
-`src/server/filings/` contains the route, pure listing logic, query schemas, response types, and business tests.
+`src/server/filings/` contains the router, controller, pure listing logic, query schemas, response types, and business tests.
 `src/server/errors/` translates API errors; startup creates one shared SEC client and injects it into the application.
+Routers register paths; controllers validate input, call services, and send responses. Business services have no Express
+dependency. HTTP integration tests exercise these boundaries through the application.
+
+## Summary API
+
+```sh
+curl -fsS 'http://127.0.0.1:3000/filings/summary?tickers=AAPL,SPOT,JPM'
+```
+
+`GET /filings/summary` requires one comma-separated `tickers` parameter. Trim/uppercase and deduplication preserve
+first-requested order; the limit is 10 unique tickers. Empty entries, repeated parameters, unknown query keys, or more
+than 10 unique tickers return 400 before SEC work.
+
+The response is `{ window: { from, to }, results }`. Dates are UTC `YYYY-MM-DD`; `from` is 12 calendar months before
+today, with leap day clamped to February 28 where necessary. Both bounds are inclusive and captured once per request.
+
+- Success: `{ ticker, status: "success", company, countsByForm, latest10KDate }`. Counts use exact form names and filing
+  dates inside the window. No recent filings yields `{}`. Latest exact `10-K` considers all history through today,
+  including older archives; no eligible `10-K` yields `null`. Amendments and foreign forms stay distinct.
+- Failure: `{ ticker, status: "error", error: { code, message } }`. A failed company has no counts or annual date.
+  Valid batches return 200 even if every company fails. Unexpected internal defects return a generic HTTP 500.
+
+Future dates are excluded from both counts and the annual date. Both endpoints share the SEC client/cache; a summary
+still waits for complete history for every company. Large cold batches can be slow. The router/controller, aggregation,
+batch loading, query schemas, response types, and tests are collocated under `src/server/summary/`.
 
 ## SEC history adapter
 
