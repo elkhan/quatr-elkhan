@@ -1,14 +1,30 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import express from "express";
+import { errorHandler } from "./errors/handler";
+import { createFilingsRouter } from "./filings/routes";
+import { createCorsPolicy } from "./security/cors";
+import { securityHeaders } from "./security/headers";
+import { requestLimits } from "./security/request-limits";
+import type { AppOptions } from "./types/app";
 
-export function createApp({ clientDirectory }: { clientDirectory?: string } = {}) {
+export function createApp({ clientDirectory, secClient, allowedOrigins }: AppOptions) {
   const app = express();
   app.disable("x-powered-by");
+  app.set("query parser", "simple");
+  app.use(securityHeaders);
+  app.use(createCorsPolicy(allowedOrigins));
+  app.use(requestLimits);
+
+  app.options("/{*path}", (_request, response) => {
+    response.sendStatus(204);
+  });
 
   app.get("/health", (_request, response) => {
     response.json({ status: "ok" });
   });
+
+  app.use("/companies", createFilingsRouter(secClient));
 
   if (clientDirectory) {
     if (!existsSync(join(clientDirectory, "index.html"))) {
@@ -18,8 +34,10 @@ export function createApp({ clientDirectory }: { clientDirectory?: string } = {}
   }
 
   app.use((_request, response) => {
-    response.status(404).json({ error: { message: "Not found" } });
+    response.status(404).json({ error: { code: "NOT_FOUND", message: "Not found" } });
   });
+
+  app.use(errorHandler);
 
   return app;
 }

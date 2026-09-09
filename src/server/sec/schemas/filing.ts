@@ -5,6 +5,9 @@ import { cikSchema } from "./company";
 function isRelativeDocumentPath(value: string): boolean {
   if (value === "") return true;
   if (value.includes("\\")) return false;
+  // In Unicode mode this matches lone surrogates, not valid pairs such as emoji.
+  const hasInvalidUnicode = /[\uD800-\uDFFF]/u.test(value);
+  if (hasInvalidUnicode) return false;
   return value.split("/").every((part) => part !== "" && part !== "." && part !== "..");
 }
 

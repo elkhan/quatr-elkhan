@@ -1,6 +1,6 @@
 # Assignment roadmap
 
-Status: **T00 and T01 merged by you; T02 published in [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3), live SEC checks pending identity approval.**
+Status: **T00–T02 merged by you; T03 implemented and awaiting staged review. Manual live SEC checks pass with the authorized dummy identity; automated tests remain fixture-only.**
 
 Build a TypeScript, React, and Express application that resolves SEC tickers, lists their complete filing history with
 pagination and form filtering, and summarizes filings across companies. The UI supports company selection, form
@@ -24,7 +24,8 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
 - Focus tests on business behavior, not setup/configuration. Use unit tests for pure filing logic and integration tests
   for the SEC adapter and API boundaries, stubbing only SEC traffic. Once endpoints exist, exercise real Express
   requests; UI tests exercise user interactions with controlled API responses. Avoid redundant checks and keep automated
-  tests independent of live SEC data. Verify build/start through acceptance rather than extra setup test suites.
+  tests and CI isolated from every live API. Manual live acceptance is separate and never enters test scripts.
+  Verify build/start through acceptance rather than extra setup test suites.
 - Every implementation PR covers its documented edge cases. Each applicable NOTES.md entry links to the actual test once
   written; uncovered cases remain explicitly open. Do not mark work complete with silently deferred edge coverage.
 - Before every non-documentation handoff: run type checking, Biome, knip, unit/integration tests, a production build,
@@ -40,8 +41,8 @@ stop and document missing work and how to finish it in NOTES.md, as the assignme
 - Keep PROMPTS.md current with user prompts and follow-up answers. Maintain edge cases and reasoning through N01
   throughout implementation.
 
-Task-tracker checkboxes mean acceptance criteria and required checks are satisfied and you have accepted the PR. They do
-not authorize merging. T02 remains open until its PR is reviewed.
+Task-tracker checkboxes record PRs accepted by you. Outstanding validation limitations remain explicitly documented;
+they do not become passes when a PR is merged. T03 remains open until its PR is reviewed. No checkbox authorizes merging.
 
 ## Scope decisions
 
@@ -86,10 +87,11 @@ its link when created.
 - [x] **T01 — Project setup and runnable skeleton.** Reviewed and merged by you.
   [PR #2](https://github.com/elkhan/quatr-elkhan/pull/2). CI passed on merged `main`; redundant configuration/startup
   tests remain removed in line with your testing guidance.
-- [ ] **T02 — SEC lookup and complete normalized history.** 24 business tests and local quality/build/start/acceptance
-  checks pass. Staged changes reviewed and published; PR review and live SEC identity approval pending.
+- [x] **T02 — SEC lookup and complete normalized history.** Reviewed and merged by you. Deterministic checks passed;
+  manual live SEC history/document checks subsequently passed with the authorized dummy identity; T06 will repeat final feature acceptance.
   [PR #3](https://github.com/elkhan/quatr-elkhan/pull/3).
-- [ ] **T03 — Paginated, filterable filings endpoint.** Not started. PR: pending.
+- [ ] **T03 — Paginated, filterable filings endpoint.** Implemented with HTTP security controls; 75 total tests, quality checks, build/start, and
+  compiled-app local HTTP acceptance pass. Awaiting staged review. PR: pending.
 - [ ] **T04 — Multi-company summary endpoint.** Not started. PR: pending.
 - [ ] **T05 — Filing browser and summary UI.** Not started. PR: pending.
 - [ ] **T06 — End-to-end acceptance and run instructions.** Not started. PR: pending.
@@ -168,10 +170,10 @@ concurrent requests. See E01–E05 and E11 in NOTES.md.
 
 **Acceptance:** Run the fixture-backed client against a company whose relevant filing exists only in an archive, and
 verify no rows are lost or duplicated. Make a limited live lookup/history check for Apple, Spotify, and JPMorgan Chase
-using your configured SEC identity; record access failures honestly.
+using an explicitly authorized identity, separate from automated tests; record access failures honestly.
 
-**Current evidence:** Unit/integration tests, local HTTP fixture acceptance, and build/start pass. Live checks and link
-verification are pending approval to transmit the configured SEC identity; see NOTES.md.
+**Current evidence:** Unit/integration tests, local HTTP fixture acceptance, and build/start pass. Manual live history and
+source-document HTTP retrieval passed for all three companies with the authorized dummy identity; see NOTES.md.
 
 ### T03 — Paginated, filterable filings endpoint
 
@@ -179,12 +181,14 @@ verification are pending approval to transmit the configured SEC identity; see N
 
 **Acceptance criteria:**
 
-- [ ] Validate path/query input; return normalized company identity, filing objects, and accurate filtered pagination
+- [x] Validate path/query input; return normalized company identity, filing objects, and accurate filtered pagination
   metadata.
-- [ ] Support optional exact form filtering and ascending/descending filing-date sorting across the complete result
+- [x] Support optional exact form filtering and ascending/descending filing-date sorting across the complete result
   before pagination. Same-date results have deterministic ordering.
-- [ ] Empty results and a page beyond the last page return an empty list and correct total. Input and upstream failures
+- [x] Empty results and a page beyond the last page return an empty list and correct total. Input and upstream failures
   use consistent JSON errors and appropriate HTTP statuses.
+- [x] Security follow-up: apply Helmet, bound URLs/reject bodies before SEC work, and preserve strict query pollution
+  checks. Document sensitive-data logging, CSRF/CORS, inbound rate limits, and deployment gaps in NOTES.md.
 
 **Red/green tests and edge cases:** Unit-test filtering, ordering, and page calculations; integration-test real Express
 requests with only SEC responses stubbed. Cover defaults, both sort directions, `10-K` versus `10-K/A`, another form
@@ -194,6 +198,18 @@ Ensure an archived filing appears on the correct page. See E06–E07 and E11.
 
 **Acceptance:** Build/start, then exercise filtering, sorting, page boundaries, an unknown ticker, and an archive
 failure over HTTP. Confirm a returned original-document link opens on sec.gov.
+
+**Current evidence:** Six listing unit tests and 43 real-HTTP route cases pass; a reproduced malformed-Unicode filename
+defect also has a SEC schema regression test. All 75 tests and required local checks pass. Compiled-app acceptance covered
+filtering, ordering, paging, invalid input, unknown ticker, archive failure/recovery, and a real request timeout. Live SEC
+history checks and source-document HTTP retrieval now pass with the authorized dummy identity; interactive UI navigation
+remains T05/T06. Unknown query parameters currently return
+400, as proposed while awaiting your preference. The security follow-up additionally verified headers, URL/body rejection,
+query pollution, explicit CORS origins/preflights, and the built UI under CSP; security gaps and validation evidence are
+recorded in NOTES.md.
+
+**Deferred discussion:** Docker packaging and nock can be considered after these routes are reviewed. Neither is part of
+T03, and no implementation task or dependency is added until that discussion.
 
 ### T04 — Multi-company summary endpoint
 
